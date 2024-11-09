@@ -1,0 +1,10 @@
+{
+  "spawnRadius": 20,
+  "waveIntervalDays": 1,
+  "waveMobs": [
+    {
+      "mobId": "minecraft:zombie",
+      "count": 10
+    }
+  ]
+}
