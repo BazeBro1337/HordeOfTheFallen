@@ -3,9 +3,9 @@
 	"id": "hordeofthefallen",
 	"version": "${version}",
 	"name": "HordeOfTheFallen",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Configurable mobs night hordes",
 	"authors": [
-		"Me!"
+		"BazeBro1337"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
