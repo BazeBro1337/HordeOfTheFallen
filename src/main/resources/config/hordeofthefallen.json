@@ -4,7 +4,8 @@
   "waveMobs": [
     {
       "mobId": "minecraft:zombie",
-      "count": 10
+      "count": 10,
+      "minDay": 1
     }
   ]
 }

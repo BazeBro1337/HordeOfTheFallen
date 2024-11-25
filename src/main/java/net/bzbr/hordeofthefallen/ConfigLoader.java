@@ -40,7 +40,8 @@ public class ConfigLoader {
                 JsonObject mobObj = mobsArray.get(i).getAsJsonObject();
                 String mobId = mobObj.get("mobId").getAsString();
                 int count = mobObj.get("count").getAsInt();
-                waveMobs.add(new MobConfig(mobId, count));
+                int minDay = mobObj.get("minDay").getAsInt();
+                waveMobs.add(new MobConfig(mobId, count, minDay));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,6 +54,7 @@ public class ConfigLoader {
         JsonObject mob = new JsonObject();
         mob.addProperty("mobId", "minecraft:zombie");
         mob.addProperty("count", 10);
+        mob.addProperty("minDay", 1);
 
         waveMobsJson.add(mob);
 
@@ -75,21 +77,6 @@ public class ConfigLoader {
         return waveMobs;
     }
 
-    public static class MobConfig {
-        private final String mobId;
-        private final int count;
-
-        public MobConfig(String mobId, int count) {
-            this.mobId = mobId;
-            this.count = count;
-        }
-
-        public String getMobId() {
-            return mobId;
-        }
-
-        public int getCount() {
-            return count;
-        }
+    public record MobConfig(String mobId, int count, int minDay) {
     }
 }
