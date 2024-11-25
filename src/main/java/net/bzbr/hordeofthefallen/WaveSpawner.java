@@ -23,7 +23,7 @@ public class WaveSpawner {
         difficultyMap = new HashMap<>();
         difficultyMap.put(Difficulty.EASY.getId(), 0.3);
         difficultyMap.put(Difficulty.NORMAL.getId(), 0.5);
-        difficultyMap.put(Difficulty.HARD.getId(), 0.8);
+        difficultyMap.put(Difficulty.HARD.getId(), 0.7);
         difficultyMap.put(Difficulty.PEACEFUL.getId(), 0.1);
     }
 
@@ -33,13 +33,12 @@ public class WaveSpawner {
 
     public static void checkAndSpawnWave(ServerWorld world, int dayCount) {
 
-
         int waveInterval = ConfigLoader.getWaveIntervalDays();
         int waveNo = Math.max(1, dayCount/waveInterval);
 
         if (dayCount % waveInterval == 0) {
 
-            spawnWave(world, ConfigLoader.getSpawnRadius(), waveNo);
+            spawnWave(world, ConfigLoader.getSpawnRadius(), waveNo, dayCount);
             if (!isWaveActive) {
                 isWaveActive = true;
             }
@@ -51,24 +50,27 @@ public class WaveSpawner {
         }
     }
 
-    public static void spawnWave(ServerWorld world, int radius, int waveMultiplier) {
+    public static void spawnWave(ServerWorld world, int radius, int waveMultiplier, int dayCount) {
 
         var players = world.getPlayers();
         players = players.stream().filter(pl -> !pl.isCreative()).toList();
 
         for (ServerPlayerEntity player : players) {
 
-            for (ConfigLoader.MobConfig mobConfig : ConfigLoader.getWaveMobs()) {
+            var waveMobs = ConfigLoader.getWaveMobs();
+            waveMobs = waveMobs.stream().filter(x-> dayCount >= x.minDay()).toList();
+
+            for (ConfigLoader.MobConfig mobConfig : waveMobs) {
 
                 var playerPos = player.getBlockPos();
-                EntityType<?> mobType = Registries.ENTITY_TYPE.get(new Identifier(mobConfig.getMobId()));
+                EntityType<?> mobType = Registries.ENTITY_TYPE.get(new Identifier(mobConfig.mobId()));
 
                 if (mobType == null) {
-                    System.out.println("Invalid mob ID: " + mobConfig.getMobId());
+                    System.out.println("Invalid mob ID: " + mobConfig.mobId());
                     continue;
                 }
 
-                var mobCount = mobConfig.getCount();
+                var mobCount = mobConfig.count();
                 mobCount += ThreadLocalRandom.current().nextInt(0, (int)(mobCount * 0.5));
                 mobCount *= Math.min(50, Math.max(1, (int)(waveMultiplier * difficultyMap.get(world.getDifficulty().getId()))));
                 mobCount = Math.min(50, mobCount);
@@ -90,7 +92,7 @@ public class WaveSpawner {
                     if (mob != null) {
                         mob.refreshPositionAndAngles(spawnPos, 0, 0);
                         world.spawnEntity(mob);
-                        mob.getNavigation().startMovingTo(player, 1.0);
+                        mob.getNavigation().startMovingTo(player, 1 + difficultyMap.get(world.getDifficulty().getId()));
                     }
                 }
             }
