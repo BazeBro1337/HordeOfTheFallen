@@ -30,7 +30,6 @@ public class DayCounter {
 
         if (tickCounter >= 1000) {
 
-            _dayData.incrementDayCounter();
             customDayCounter = _dayData.getDayCounter();
             tickCounter = 0;
 

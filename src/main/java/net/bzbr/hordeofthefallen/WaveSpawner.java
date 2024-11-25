@@ -53,7 +53,10 @@ public class WaveSpawner {
 
     public static void spawnWave(ServerWorld world, int radius, int waveMultiplier) {
 
-        for (ServerPlayerEntity player : world.getPlayers()) {
+        var players = world.getPlayers();
+        players = players.stream().filter(pl -> !pl.isCreative()).toList();
+
+        for (ServerPlayerEntity player : players) {
 
             for (ConfigLoader.MobConfig mobConfig : ConfigLoader.getWaveMobs()) {
 
